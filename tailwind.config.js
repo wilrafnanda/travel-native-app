@@ -7,12 +7,14 @@ module.exports = {
     extend: {
       colors: {
         primary: "#135bec",
-        secondary: "#0C2B4E",
+      secondary: "#0C2B4E",
         "background-light": "#F4F4F4",
         "text-dark": "#0C2B4E",
         "text-muted": "#5A6B80",
+        "text-brand": "#5d94a5"
       },
     },
   },
   plugins: [],
 };
+ 

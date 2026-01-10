@@ -36,7 +36,7 @@ export default function Index() {
             <CustomButton
               title="Get Started"
               onPress={() => router.navigate('/sign_up')}
-              containerStyle=" w-full mt-40"
+              containerStyle=" w-full mt-40 bg-primary"
             />
          
         </View>

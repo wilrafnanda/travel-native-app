@@ -11,13 +11,17 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   title,
   containerStyle,
   onPress,
+  
+  
 }) => {
   return (
     <TouchableOpacity
-      className={`bg-primary min-h-[62px] justify-center items-center rounded-xl ${containerStyle || ""}`}
+      className={` min-h-[62px] justify-center items-center rounded-xl ${containerStyle || ""}`}
       onPress={onPress}
+      
     >
-      <Text className="text-white font-extrabold text-lg">{title}</Text>
+      <Text className={`
+         text-white font-extrabold text-lg`}>{title}</Text>
     </TouchableOpacity>
   );
 };
