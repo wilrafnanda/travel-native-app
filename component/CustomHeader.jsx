@@ -5,7 +5,7 @@ import { router } from 'expo-router'
 
 export default function CustomHeader() {
   return (
-    <View className="w-full flex flex-row items-center justify-between mb-5">
+    <View className="w-full flex flex-row items-center justify-between mb-5 pt-4">
         <View className="flex flex-row items-center gap-2">
             <View className="h-10 w-10 bg-secondary flex items-center justify-center rounded-full">
               <FontAwesome6 name="car" size={17} color="#ffffff"/>

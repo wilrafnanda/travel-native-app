@@ -3,35 +3,59 @@ import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import { ActivityIndicator, Alert, ScrollView, Text, View } from "react-native";
+import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view"
 import { SafeAreaView } from "react-native-safe-area-context";
 import InputField from "../../component/InputField";
 import { toast } from "../../lib/toast";
 
+
 const sign_up = () => {
+
   const [Form, setForm] = useState({
     username: "",
     email: "",
     password: "",
   });
-
- 
+  
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+ 
   const submit = async () => {
-    console.log("Form data:", Form);
-     router.replace("/(Tabs)/Home");
+    // if (!Form.email || !Form.password || !Form.username) {
+    //       Alert.alert("INVALID", "Please enter valid email address & password.");
+    //       return;
+    //     }
+        setIsSubmitting(true);
+    
+        try {
+          router.push('/(Tabs)/Home')
+          toast("Welcome back. You are logged in");
+          setTimeout(() => {
+            setIsSubmitting(false);
+            router.replace("/(Tabs)/Home");
+          }, 1000);
+        } catch (error) {
+          Alert.alert("Error", error.message);
+        } finally {
+          setIsSubmitting(false);
+          
+        }
   };
 
   return (
     <SafeAreaView className="bg-background-light">
       <ScrollView contentContainerStyle={{ height: "100%", width: "100%" }}>
         {isSubmitting && <ActivityIndicator size={50} color={"red"} />}
-        <View className="h-full w-full flex items-start mt-[100px] py-4 px-4 ">
+        <View description='Track the status and time remaining on your active rentals' className="h-full w-full flex items-start mt-[100px] py-4 px-4 ">
           <View className="w-20 h-20  rounded-2xl flex items-center justify-center bg-secondary transform rotate-6 ">
             <FontAwesome6 name="user-plus" size={24} color="#ffffff" />
           </View>
-          <View className="mt-4 w-full">
+          <KeyboardAwareScrollView className="flex-1 w-full" 
+            containerStyle={{flexGrow:1}}
+            enableOnAndroid={true}
+            extraScrollHeight={100}
+          
+          >
             <Text className="text-text-dark text-[3rem] font-extrabold ">
               Create Account
             </Text>
@@ -79,10 +103,7 @@ const sign_up = () => {
               Already have an account?{" "}
               <Text className="text-primary font-semibold">Sign In</Text>
             </Text>
-            <Text onPress={() => router.replace("/(Tabs)/Home")}>
-              go to home
-            </Text>
-          </View>
+          </KeyboardAwareScrollView>
         </View>
       </ScrollView>
     </SafeAreaView>

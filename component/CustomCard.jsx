@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { FontAwesome6 } from '@expo/vector-icons'
 
-export default function CustomCard({title, buttonTitle, description,tag,icon}) {
+export default function CustomCard({title, buttonTitle, description,tag,icon, onPress}) {
   return (
     <View className=" w-ful bg-secondary p-[20px] rounded-[20px] shadow-slate-600">
         <View className=" flex flex-row justify-between items-center">
@@ -18,7 +18,7 @@ export default function CustomCard({title, buttonTitle, description,tag,icon}) {
             {description}
         </Text>
         
-        <TouchableOpacity className="w-full bg-white h-[80px] flex items-center justify-center rounded-[20px] mt-10 py-[20px]">
+        <TouchableOpacity className="w-full bg-white h-[80px] flex items-center justify-center rounded-[20px] mt-10 py-[20px]" onPress={onPress}>
             <Text className="font-extrabold text-secondary text-2xl">
                 {buttonTitle}
             </Text>

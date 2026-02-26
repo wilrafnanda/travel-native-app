@@ -10,7 +10,7 @@ const InputField = ({ title, value, onChangeText, placeholder, containerStyle,..
           value={value}
           onChangeText={onChangeText}
           placeholder={placeholder}
-          className="w-full text-text-dark"
+          className={`w-full text-text-dark`}
         />
       </View>
     </View>

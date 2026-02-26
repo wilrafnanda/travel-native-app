@@ -46,6 +46,14 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
+        name="Mechanic" // Matches index.tsx
+        options={{
+          title: 'Mechanic',
+          tabBarShowLabel: false,
+          tabBarIcon: ({ color ,focused}) => <FontAwesome6 size={22} name="wrench" color={!focused ?"#94a3b8" :"#0C2B4E"}  />,
+        }}
+      />
+      <Tabs.Screen
         name="Sale" // Matches index.tsx
         options={{
           title: 'Sale',

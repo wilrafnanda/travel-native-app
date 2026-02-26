@@ -3,6 +3,7 @@ import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import { Alert, ScrollView, Text, View } from "react-native";
+import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view"
 import { SafeAreaView } from "react-native-safe-area-context";
 import InputField from "../../component/InputField";
 
@@ -41,7 +42,12 @@ const Log_in = () => {
   return (
     <SafeAreaView className="bg-background-light">
       <ScrollView contentContainerStyle={{ height: "100%", width: "100%" }}>
-        <View className="h-full w-full flex items-start mt-[100px] py-4 px-4 ">
+        <KeyboardAwareScrollView className="h-full w-full flex  mt-[100px] py-4 px-4 "
+          containerStyle={{flexGrow:1 }}
+          enableOnAndroid={true}
+          extraScrollHeight={100}
+        
+        >
           <View className="w-20 h-20  rounded-2xl flex items-center justify-center bg-secondary transform rotate-6 ">
             <FontAwesome6 name="right-to-bracket" size={24} color="#ffffff" />
           </View>
@@ -86,7 +92,7 @@ const Log_in = () => {
               <Text className="text-primary font-semibold">Sign up</Text>
             </Text>
           </View>
-        </View>
+        </KeyboardAwareScrollView>
       </ScrollView>
     </SafeAreaView>
   );
