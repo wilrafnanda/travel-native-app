@@ -1,13 +1,9 @@
 import React from "react";
 import { Text, TouchableOpacity } from "react-native";
 
-interface CustomButtonProps {
-  title: string;
-  containerStyle?: string;
-  onPress: () => void;
-}
 
-const CustomButton: React.FC<CustomButtonProps> = ({
+
+const CustomButton = ({
   title,
   containerStyle,
   onPress,
@@ -20,6 +16,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
       onPress={onPress}
       
     >
+      {}
       <Text className={`
          text-white font-extrabold text-lg`}>{title}</Text>
     </TouchableOpacity>

@@ -1,52 +1,26 @@
 import CustomButton from "@/component/CustomButton";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { router } from "expo-router";
-import React, { useState } from "react";
-import { Alert, ScrollView, Text, View } from "react-native";
-import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view"
+import React from "react";
+import { ActivityIndicator, ScrollView, Text, View } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { SafeAreaView } from "react-native-safe-area-context";
 import InputField from "../../component/InputField";
+import { Formik } from "formik";
 
-import { toast } from "../../lib/toast";
+
 
 const Log_in = () => {
-  const [Form, setForm] = useState({
-    email: "",
-    password: "",
-  });
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const submit = async () => {
-    if (!Form.email || !Form.password) {
-      Alert.alert("INVALID", "Please enter valid email address & password.");
-      return;
-    }
-    setIsSubmitting(true);
-
-    try {
-      
-      toast("Welcome back. You are logged in");
-      setTimeout(() => {
-        setIsSubmitting(false);
-        router.replace("/(Tabs)/Home");
-      }, 2000);
-    } catch (error) {
-      Alert.alert("Error", error.message);
-    } finally {
-      setIsSubmitting(false);
-      router.replace("/(Tabs)/Home");
-    }
-  };
+ 
 
   return (
     <SafeAreaView className="bg-background-light">
       <ScrollView contentContainerStyle={{ height: "100%", width: "100%" }}>
-        <KeyboardAwareScrollView className="h-full w-full flex  mt-[100px] py-4 px-4 "
-          containerStyle={{flexGrow:1 }}
+        <KeyboardAwareScrollView
+          className="h-full w-full flex  mt-[100px] py-4 px-4 "
+          containerStyle={{ flexGrow: 1 }}
           enableOnAndroid={true}
           extraScrollHeight={100}
-        
         >
           <View className="w-20 h-20  rounded-2xl flex items-center justify-center bg-secondary transform rotate-6 ">
             <FontAwesome6 name="right-to-bracket" size={24} color="#ffffff" />
@@ -59,31 +33,81 @@ const Log_in = () => {
               Enter your details to sign in
             </Text>
 
-            <InputField
-              title="User Email"
-              value={Form.email}
-              onChangeText={(e) => {
-                setForm({ ...Form, email: e });
+            <Formik
+              initialValues={{ email: "", password: "" }}
+              onSubmit={async (values, { setSubmitting }) => {
+               
               }}
-              placeholder="Enter a correct email address"
-              containerStyle=""
-            />
+              validate={(values) => {
+                const errors = {};
+                if (!values.email) {
+                  errors.email = "Email is required";
+                } else if (
+                  !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
+                ) {
+                  errors.email = "Invalid email address";
+                }
+                if (!values.password) {
+                  errors.password = "Password is required";
+                }
+                return errors;
+              }}
+            >
+              {({
+                values,
+                errors,
+                touched,
+                handleChange,
+                handleBlur,
+                handleSubmit,
+                isSubmitting,
+              }) => (
+                <>
+                  <InputField
+                    title="User Email"
+                    value={values.email}
+                    onChangeText={handleChange("email")}
+                    onBlur={handleBlur("email")}
+                    keyboardType="email-address"
+                    placeholder="Enter a correct email address"
+                    containerStyle=""
+                  />
+                  {errors.email && touched.email && (
+                    <Text className="text-red-600 text-sm mt-1">
+                      {errors.email}
+                    </Text>
+                  )}
 
-            <InputField
-              title="Password"
-              value={Form.password}
-              onChangeText={(e) => {
-                setForm({ ...Form, password: e });
-              }}
-              placeholder="Enter a strong password"
-              containerStyle=""
-            />
-            <CustomButton
-              title="Sign in"
-              containerStyle={`bg-secondary w-full rounded-lg mt-8 bg-secondary`}
-              isLoading={isSubmitting}
-              onPress={submit}
-            />
+                  <InputField
+                    title="Password"
+                    secureTextEntry
+                    value={values.password}
+                    onChangeText={handleChange("password")}
+                    onBlur={handleBlur("password")}
+                    placeholder="Enter your password"
+                    containerStyle=""
+                  />
+                  {errors.password && touched.password && (
+                    <Text className="text-red-600 text-sm mt-1">
+                      {errors.password}
+                    </Text>
+                  )}
+
+                  <CustomButton
+                    title="Sign In"
+                    containerStyle="bg-secondary w-full rounded-lg mt-8"
+                    isLoading={isSubmitting}
+                    onPress={handleSubmit}
+                    disabled={isSubmitting}
+                  />
+                  {isSubmitting && (
+                   
+                      <ActivityIndicator size={50} color="#ffffff" />
+                   
+                  )}
+                </>
+              )}
+            </Formik>
             <Text
               className="text-text-muted text-center mt-4"
               onPress={() => router.replace("/(Auths)/sign_up")}

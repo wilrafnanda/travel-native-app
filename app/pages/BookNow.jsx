@@ -1,38 +1,96 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { View, Text, TextInput, TouchableOpacity, Dimensions, StyleSheet } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FontAwesome5, MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
+import * as Location from 'expo-location'; // Import the library
+// ... your other imports
+
 
 const { width, height } = Dimensions.get('window');
 
 const PlanRideScreen = () => {
   const insets = useSafeAreaInsets();
+  const mapRef = useRef(null); // Reference to control the map
   const [destination, setDestination] = useState('');
+  const [hasFollowed, setHasFollowed] = useState(false);
+  const [userPos, setUserPos] = useState({
+    latitude: 4.0511, // Default Douala
+    longitude: 9.7679,
+  });
+   const initialRegion = {
 
-  // Initial Region focused on a city center
-  const initialRegion = {
-    latitude: 4.0511, // Douala Latitude
-  longitude: 9.7679, // Douala Longitude
-  latitudeDelta: 0.05, // Zoom level (approx 5km view)
-  longitudeDelta: 0.05,
-  };
+        latitude: 4.0511, // Douala Latitude
+        longitude: 9.7679, // Douala Longitude
+        latitudeDelta: 0.5, // Zoom level (approx 5km view)
+        longitudeDelta: 0.5,
+
+    };
+  
+  useEffect(() => {
+    (async () => {
+      // 1. Request permission
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        console.log('Permission to access location was denied');
+        return;
+      }
+
+      // 2. Get current position
+      let location = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.Balanced,
+      });
+      const newPos = {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      };
+      setUserPos(newPos);
+      // Initial Region focused on a city center
+      // Initial Region focused on a city center
+
+   
+
+      // 3. Zoom directly to the position
+      if (mapRef.current) {
+        mapRef.current.animateToRegion({
+          ...newPos,
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+  
+        }, 2000); // 1.5 seconds animation duration
+      }
+    })();
+  }, []);
 
   return (
     <View style={styles.container}>
       {/* 1. MAP ENGINE */}
       <MapView
+        ref={mapRef}
         provider={PROVIDER_GOOGLE}
         style={styles.map}
-        initialRegion={initialRegion}
+        initialRegion={initialRegion} // Default until zoom happens
+        onUserLocationChange={(event) => {
+        // Only zoom the very first time the app finds the user
+        if (!hasFollowed) {
+        const { latitude, longitude } = event.nativeEvent.coordinate;
+        mapRef.current.animateToRegion({
+        latitude,
+        longitude,
+        latitudeDelta: 0.005, // Professional street zoom
+        longitudeDelta: 0.005,
+      }, 1500);
+      setHasFollowed(true); // Stop it from following/zooming every time they move
+    }
+  }}
         showsUserLocation={true} // Shows the blue dot for your current spot
         followsUserLocation={true} // Keeps the camera following you
       >
-        <Marker coordinate={{ latitude: 40.7128, longitude: -74.0060 }}>
+        <Marker coordinate={userPos}>
            <View className="bg-secondary p-2 rounded-full border-2 border-white shadow-md">
-             <Ionicons name="car" size={18} color="white" />
+             <Ionicons name="accessibility-sharp" size={10} color="white" />
            </View>
         </Marker>
       </MapView>
@@ -92,13 +150,13 @@ const PlanRideScreen = () => {
         </View>
 
         {/* Recent Places Grid */}
-        <Text className="text-slate-400 font-bold text-[10px] mt-8 mb-4 uppercase tracking-widest">Recent</Text>
+        {/* <Text className="text-slate-400 font-bold text-[10px] mt-8 mb-4 uppercase tracking-widest">Recent</Text>
         <View className="flex-row justify-between mb-8">
           <RecentItem icon="home" label="Home" />
           <RecentItem icon="briefcase" label="Work" />
           <RecentItem icon="fitness" label="Gym" />
           <RecentItem icon="cart" label="Market" />
-        </View>
+        </View> */}
 
         {/* Action Button */}
         <TouchableOpacity className="bg-secondary flex-row items-center justify-center py-5 rounded-[25px] shadow-xl mt-10">
