@@ -1,7 +1,8 @@
+import React, { useState } from "react";
 import CustomButton from "@/component/CustomButton";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import { router } from "expo-router";
-import { Formik } from "formik";
+import { router ,useRouter} from "expo-router";
+
 
 // import React, { useState } from "react";
 import { ActivityIndicator, Alert, ScrollView, Text, View } from "react-native";
@@ -9,6 +10,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { SafeAreaView } from "react-native-safe-area-context";
 import { toast } from "../../lib/toast";
 import { useAuth } from "@/contexts/AuthContext";
+
 
 
 import InputField from "../../component/InputField";
@@ -20,9 +22,46 @@ import InputField from "../../component/InputField";
 
 const sign_up = () => {
 
-  const {onRegister} = useAuth()
+const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  
+  // Get the function from your Context
+  const { onRegister } = useAuth();
+  const router = useRouter();
+
+  const handleRegister = async () => {
+    // Basic validation
+    if (!username || !email || !password) {
+      Alert.alert("Error", "Please fill in all fields");
+      return;
+    }
+
+    setLoading(true);
+    
+    // Call the function from your AuthContext
+    const result = await onRegister(username, email, password);
+
+    setLoading(false);
+
+    // Log the full response
+    console.log("Registration Response:", JSON.stringify(result, null, 2));
+
+    if (result && result.success) {
+      // Registration successful
+      console.log("User Data:", result.data.user);
+      console.log("Token:", result.data.token);
+      
+      Alert.alert("Registration Successful", result.message);
+      // Send them to login
+      router.replace("/(Auths)/log_in");
+    } else {
+      // Show error message from backend
+      Alert.alert("Registration Failed", result?.message || "Something went wrong");
+      console.log("Registration Error:", result);
+    }
+  };
 
   return (
     <SafeAreaView className="bg-background-light flex-1">
@@ -46,106 +85,54 @@ const sign_up = () => {
             <Text className="text-text-muted text-lg font-extrabold ">
               Join us to start your journey
             </Text>
-            <Formik
-              initialValues={{ username: "", email: "", password: "" }}
-              onSubmit={(values)=>{
-                 try {
-                    const result = onRegister(username, email , password)
-                    if(result){
-                      console.log(result);
-                      
-                    }
-                  } catch (error) {
-                    Alert.alert("Error", error.message);console.log(error);
-                    
-                  } finally {
-
-                  }
-              }
-                
-              }
-              validate={(values) => {
-                const errors = {};
-                if (!values.email) {
-                  errors.email = "email Required";
-                } else if (
-                  !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
-                ) {
-                  errors.email = "Invalid email address";
-                }
-                if(!values.password){
-                  errors.password = "password is required"
-                }
-                if(!values.username){
-                  errors.username = "user name required"
-                }
-
-                return errors;
-              }}
-            >
-              {({
-                values,
-                errors,
-                touched,
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                isSubmitting,
-                
-              }) => (
+           
                 <>
                   <InputField
                     title="User Name"
                     type="email"
-                    value={values.username}
-                    onChangeText={handleChange("username")}
-                    onBlur={handleBlur("username")}
+                    value={username}
+                    onChangeText={setUsername}
                     keyboardType=" email-address"
                     placeholder="Enter a correct email address"
                     containerStyle=""
                   />
-                  {errors.username && touched.username && (
-                    <Text className="text-red-700">{errors.username}</Text>
-                  )}
+                 
                  
                   <InputField
                     title="User Email"
                     type="email"
-                    value={values.email}
-                    onChangeText={handleChange("email")}
-                    onBlur={handleBlur("email")}
+                    value={email}
+                    onChangeText={setEmail}
                     keyboardType=" email-address"
                     placeholder="Enter a correct email address"
                     containerStyle=""
                   />
-                  {errors.email && touched.email && (
-                    <Text className="text-red-700">{errors.email}</Text>
-                  )}
+                 
                  
                   <InputField
                     title="Password"
-                    value={values.password}
-                    onChangeText={handleChange("password")}
-                    onBlur={handleBlur("Password")}
+                    value={password}
+                    onChangeText={setPassword}
                     placeholder="Enter a strong password"
                     containerStyle=""
                   />
-                   {errors.password && touched.password &&( <Text className="text-red-700">{errors.password}</Text>)}
 
-                  <CustomButton
-                    title="Sign Up"
-                    containerStyle={`bg-secondary w-full rounded-lg mt-8 bg-secondary`}
-                    isLoading={isSubmitting}
-                    onPress={handleSubmit}
-                  />
-                  {isSubmitting && (
-                    <View className="absolute inset-0 flex items-center justify-center bg-black/30 rounded-lg">
-                      <ActivityIndicator size={50} color={"red"} />
-                    </View>
-                  )}
+
+                  {loading ? (
+                          <ActivityIndicator size="large" color="#0000ff" />
+                              ) : (
+                           <CustomButton
+                              title="Sign Up"
+                              containerStyle={`bg-secondary w-full rounded-lg mt-8 bg-secondary`}
+                              onPress={handleRegister}
+                            />
+                       )}
+                  
+                  
+                  
                 </>
-              )}
-            </Formik>
+              
+          
             <Text
               className="text-text-muted text-center mt-4"
               onPress={() => router.replace("/(Auths)/log_in")}

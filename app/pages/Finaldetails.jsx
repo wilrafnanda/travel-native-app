@@ -10,7 +10,7 @@ const MechanicFinalDetails = () => {
   // State for service area tags
   const [tags, setTags] = useState(['Brooklyn', 'Manhattan', 'Queens']);
 
-  const removeTag = (tagToRemove: string) => {
+  const removeTag = (tagToRemove) => {
     setTags(tags.filter(tag => tag !== tagToRemove));
   };
 

@@ -100,9 +100,9 @@ const PlanRideScreen = () => {
         <TouchableOpacity className="bg-white p-3 rounded-full shadow-lg" onPress={()=>router.back()}>
           <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
-        <TouchableOpacity className="bg-white p-3 rounded-full shadow-lg">
+        {/* <TouchableOpacity className="bg-white p-3 rounded-full shadow-lg">
           <MaterialCommunityIcons name="crosshairs-gps" size={24} color="#0C2B4E" />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
 
       {/* 3. BOTTOM SELECTION SHEET */}
