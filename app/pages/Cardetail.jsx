@@ -81,6 +81,7 @@ const CarDetailScreen = () => {
         <TouchableOpacity 
           className="bg-slate-900 flex-row items-center justify-center py-4 px-8 rounded-2xl shadow-xl"
           activeOpacity={0.8}
+          onPress={() => router.push("/app/pages/RentalInfo")}
         >
           <Text className="text-white font-bold text-lg mr-2">Select This Car</Text>
           <FontAwesome5 name="arrow-right" size={16} color="white" />

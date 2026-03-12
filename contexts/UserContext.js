@@ -10,7 +10,7 @@ export const useUser = () =>{
 }
 
 
- const UseProvider = ({children}) =>{
+ const UserProvider = ({children}) =>{
 
     const [userState, setUserState] = useState({
         user: null
@@ -41,9 +41,29 @@ const getUserInfo = async() =>{
         return null;
     }
 }
+
+const updatePosition = async (latitude, longitude) => {
+    try {
+      const token = await SecureStore.getItemAsync(TOKEN_KEY);
+      const respond = await fetch(`${API_URL}/update-position`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ latitude, longitude })
+      });
+      const result = await respond.json();
+      console.log('Position update response:', JSON.stringify(result, null, 2));
+    } catch (error) {
+        console.log('Error updating position:', error.message);
+    }
+}
+
     const values = {
         userState,
-        getUserInfo
+        getUserInfo,
+        updatePosition
     }
 
     return(
@@ -51,4 +71,4 @@ const getUserInfo = async() =>{
     )
  }
 
-export default UseProvider;
+export default UserProvider;
